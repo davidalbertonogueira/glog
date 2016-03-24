@@ -2,3 +2,7 @@ autom4te.cache
 glog-*.tar.gz
 packages/rpm-unknown
 packages/debian-*
+googletest/msvc/*.opendb
+googletest/msvc/*.opensdf
+googletest/msvc/*.sdf
+googletest/msvc/*.cachefile
