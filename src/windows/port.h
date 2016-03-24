@@ -1,10 +1,10 @@
 /* Copyright (c) 2008, Google Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  * notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above
@@ -14,7 +14,7 @@
  *     * Neither the name of Google Inc. nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -58,22 +58,22 @@
 #include <stdarg.h>          /* template_dictionary.cc uses va_copy */
 #include <string.h>          /* for _strnicmp(), strerror_s() */
 #include <time.h>            /* for localtime_s() */
-/* Note: the C++ #includes are all together at the bottom.  This file is
- * used by both C and C++ code, so we put all the C++ together.
- */
+ /* Note: the C++ #includes are all together at the bottom.  This file is
+  * used by both C and C++ code, so we put all the C++ together.
+  */
 
 #ifdef _MSC_VER
 
-/* 4244: otherwise we get problems when substracting two size_t's to an int
- * 4251: it's complaining about a private struct I've chosen not to dllexport
- * 4355: we use this in a constructor, but we do it safely
- * 4715: for some reason VC++ stopped realizing you can't return after abort()
- * 4800: we know we're casting ints/char*'s to bools, and we're ok with that
- * 4996: Yes, we're ok using "unsafe" functions like fopen() and strerror()
- */
+  /* 4244: otherwise we get problems when substracting two size_t's to an int
+   * 4251: it's complaining about a private struct I've chosen not to dllexport
+   * 4355: we use this in a constructor, but we do it safely
+   * 4715: for some reason VC++ stopped realizing you can't return after abort()
+   * 4800: we know we're casting ints/char*'s to bools, and we're ok with that
+   * 4996: Yes, we're ok using "unsafe" functions like fopen() and strerror()
+   */
 #pragma warning(disable:4244 4251 4355 4715 4800 4996)
 
-/* file I/O */
+   /* file I/O */
 #define PATH_MAX 1024
 #define access  _access
 #define getcwd  _getcwd
@@ -111,12 +111,13 @@ enum { STDIN_FILENO = 0, STDOUT_FILENO = 1, STDERR_FILENO = 2 };
  * because they don't always NUL-terminate. :-(  We also can't use the
  * name vsnprintf, since windows defines that (but not snprintf (!)).
  */
-#ifndef HAVE_SNPRINTF
+#if defined(_MSC_VER) && _MSC_VER < 1900
 extern int GOOGLE_GLOG_DLL_DECL snprintf(char *str, size_t size,
-                                       const char *format, ...);
-#endif
+                                         const char *format, ...);
+#endif /* defined(_MSC_VER) && _MSC_VER < 1900 */
+
 extern int GOOGLE_GLOG_DLL_DECL safe_vsnprintf(char *str, size_t size,
-                          const char *format, va_list ap);
+                                               const char *format, va_list ap);
 #define vsnprintf(str, size, format, ap)  safe_vsnprintf(str, size, format, ap)
 #ifndef va_copy
 #define va_copy(dst, src)  (dst) = (src)
@@ -129,7 +130,7 @@ extern int GOOGLE_GLOG_DLL_DECL safe_vsnprintf(char *str, size_t size,
 
 #define DEFAULT_TEMPLATE_ROOTDIR  ".."
 
-// ----------------------------------- SYSTEM/PROCESS
+ // ----------------------------------- SYSTEM/PROCESS
 typedef int pid_t;
 #define getpid  _getpid
 
